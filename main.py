@@ -31,8 +31,8 @@ async def save_auth_handler(client, message):
 
 
 
-@app.on_message(filters.command("saveclient") & filters.reply)
-async def save_client_secret(client: Client, message: Message):
+@app.on_message(filters.command("saveclient") & filters.reply & filters.user(Config.OWNER_ID))
+async def save_client_secret(client: Client, message):
     reply = message.reply_to_message
 
     # Check if the replied message has a document
