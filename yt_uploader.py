@@ -17,6 +17,18 @@ async def get_login_url():
     return auth_url
 
 async def save_auth_code(code):
+    flow = InstalledAppFlow.from_client_secrets_file(
+        "client_secret.json",
+        scopes=SCOPES,
+        redirect_uri="urn:ietf:wg:oauth:2.0:oob"
+    )
+    flow.fetch_token(code=code)
+    creds = flow.credentials
+    async with aiofiles.open("token.json", "w") as f:
+        await f.write(creds.to_json())
+    return True
+
+async def wsave_auth_code(code):
     flow = InstalledAppFlow.from_client_secrets_file("client_secret.json", SCOPES)
     flow.fetch_token(code=code)
     creds = flow.credentials
