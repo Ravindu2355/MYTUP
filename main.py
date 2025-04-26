@@ -29,6 +29,31 @@ async def save_auth_handler(client, message):
     else:
         await message.reply("❌ Failed to save authentication.")
 
+
+
+@app.on_message(filters.command("saveclient") & filters.reply)
+async def save_client_secret(client: Client, message: Message):
+    reply = message.reply_to_message
+
+    # Check if the replied message has a document
+    if not reply.document:
+        return await message.reply("❌ Please reply to a `.json` file!")
+
+    # Check if the file is a JSON
+    if not reply.document.file_name.endswith(".json"):
+        return await message.reply("❌ The file must be a `.json`!")
+
+    # Download the file
+    try:
+        save_path = "./client_secret.json"
+        await message.reply("⬇️ Downloading client secret...")
+        await reply.download(file_name=save_path)
+        await message.reply("✅ Client secret saved successfully!")
+    except Exception as e:
+        await message.reply(f"❌ Failed to save: `{str(e)}`")
+
+
+
 # /yt command
 @app.on_message(filters.command("yt") & filters.reply & filters.user(Config.OWNER_ID))
 async def yt_upload_handler(client, message):
