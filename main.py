@@ -3,7 +3,7 @@ from pyrogram import Client, filters
 from config import Config
 from yt_uploader import get_login_url, save_auth_code, upload_video
 
-app = Client(
+bot = Client(
     "UploaderBot",
     api_id=Config.API_ID,
     api_hash=Config.API_HASH,
@@ -11,13 +11,13 @@ app = Client(
 )
 
 # /login command
-@app.on_message(filters.command("login") & filters.user(Config.OWNER_ID))
+@bot.on_message(filters.command("login") & filters.user(Config.OWNER_ID))
 async def login_handler(client, message):
     url = await get_login_url()
     await message.reply(f"🔐 **Login URL:**\n[Click here to login]({url})\n\nAfter login, copy the code and use /saveAuth <code>", disable_web_page_preview=True)
 
 # /saveAuth command
-@app.on_message(filters.command("saveAuth") & filters.user(Config.OWNER_ID))
+@bot.on_message(filters.command("saveAuth") & filters.user(Config.OWNER_ID))
 async def save_auth_handler(client, message):
     parts = message.text.split()
     if len(parts) != 2:
@@ -31,7 +31,7 @@ async def save_auth_handler(client, message):
 
 
 
-@app.on_message(filters.command("saveclient") & filters.reply & filters.user(Config.OWNER_ID))
+@bot.on_message(filters.command("saveclient") & filters.reply & filters.user(Config.OWNER_ID))
 async def save_client_secret(client: Client, message):
     reply = message.reply_to_message
 
@@ -55,7 +55,7 @@ async def save_client_secret(client: Client, message):
 
 
 # /yt command
-@app.on_message(filters.command("yt") & filters.reply & filters.user(Config.OWNER_ID))
+@bot.on_message(filters.command("yt") & filters.reply & filters.user(Config.OWNER_ID))
 async def yt_upload_handler(client, message):
     media = message.reply_to_message
     if not (media.video or media.document):
@@ -80,5 +80,9 @@ async def yt_upload_handler(client, message):
         os.remove(path)
     except:
         pass
-
-app.run()
+        
+if __name__ == "__main__":
+    bot.run()
+    #os.makedirs("downloads", exist_ok=True)
+    #app.run()
+    
